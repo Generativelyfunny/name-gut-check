@@ -20,24 +20,32 @@ function isShort(input) {
 }
 
 function hasImageryWord(input) {
-  const imagery = ["moon","sun","star","river","ocean","stone","lantern","forest","shadow","light","ember","storm"];
+  const imagery = [
+    "moon","sun","star","river","ocean","stone","lantern","forest","shadow",
+    "light","ember","storm","garden","wind","cloud","mountain"
+  ];
   const s = normalize(input).toLowerCase();
   return imagery.some(w => s.includes(w));
 }
 
 function hasGenericWord(input) {
-  const generic = ["studio","labs","lab","group","collective","solutions","media","creative","works"];
+  const generic = [
+    "studio","labs","lab","group","collective","solutions","media","creative",
+    "works","company","co","inc","llc","systems","digital"
+  ];
   const s = normalize(input).toLowerCase();
   return generic.some(w => s.split(" ").includes(w));
 }
 
 function hasHardToSpellSignals(input) {
-  return /(.)\1|q(?!u)|xq|jq|tz|zs/i.test(input);
+  // Light heuristic: double letters or uncommon clusters
+  return /(.)\1|q(?!u)|xq|jq|tz|zs|aei|iou/i.test(input);
 }
 
 function hasTrendPattern(input) {
+  // Light heuristic: popular ending words or patterns
   const s = normalize(input).toLowerCase();
-  return /(labs|studio|collective)$/.test(s);
+  return /(labs|lab|studio|collective|hub)$/.test(s);
 }
 
 // ---------- Evaluation Logic ----------
@@ -59,22 +67,49 @@ function evaluateName(name) {
 
   signals.cautionCount = cautionCount;
 
-  const memorability = signals.short || signals.imagery
-    ? "The name is relatively easy to remember and has elements that help it stand out."
-    : "The name may be slightly harder to remember at first exposure due to its length or structure.";
+  // Memorability
+  let memorability = "The name has some memorable elements, though certain aspects of its structure may make it slightly harder to retain at first.";
+  if (signals.short || signals.imagery) {
+    memorability = "The name is relatively easy to remember, supported by its structure and overall feel.";
+    if (signals.imagery) {
+      memorability += " The use of visual language supports memorability by giving the mind something concrete to hold onto.";
+    }
+  }
+  if (signals.long) {
+    memorability = "The name may be harder to remember on first exposure, as its length offers fewer natural memory anchors.";
+  }
 
-  const clarity = signals.imagery
-    ? "The name suggests a tone or feeling, which helps form an initial impression."
-    : "The name is more conceptual than descriptive, which may require context to fully understand.";
+  // Clarity
+  let clarity = "The name suggests a mood or style, though it may not immediately communicate what it represents without additional context.";
+  if (signals.imagery) {
+    clarity = "The name gives a general sense of tone or direction, helping new audiences form an initial impression.";
+  }
 
+  // Practical
   let practical = "There are no obvious structural concerns. The name should function smoothly in everyday use.";
-  if (signals.spelling) practical = "Some parts of the name may be difficult to spell on first hearing, which could create minor friction.";
-  if (signals.generic) practical += " One or more terms are widely used, which may reduce distinctiveness.";
-  if (signals.trendy) practical += " The name follows a currently popular structure that may feel dated over time.";
 
-  let gutcheck = "Gut check: The name feels structurally sound with manageable trade-offs.";
-  if (cautionCount === 1) gutcheck = "Gut check: The name has several strengths, with minor areas that could be refined.";
-  if (cautionCount >= 2) gutcheck = "Gut check: The name presents a mix of strengths and trade-offs that depend on context.";
+  if (signals.spelling || signals.generic || signals.trendy) {
+    practical = "The name is workable in practical terms, though certain elements may require occasional clarification in spelling or wording.";
+  }
+
+  if (signals.spelling) {
+    practical += " Some parts may be difficult to spell on first hearing, which could create minor friction in search or sharing.";
+  }
+  if (signals.generic) {
+    practical += " One or more terms are commonly used, which may reduce distinctiveness but does not prevent effective use.";
+  }
+  if (signals.trendy) {
+    practical += " The structure follows a currently popular pattern that may date more quickly over time.";
+  }
+
+  // Gut check summary
+  let gutcheck = "Gut check: The name feels structurally sound with manageable trade-offs. It is likely workable in most contexts.";
+  if (cautionCount === 1) {
+    gutcheck = "Gut check: The name has several strengths, with a few areas that may benefit from refinement depending on your goals.";
+  }
+  if (cautionCount >= 2) {
+    gutcheck = "Gut check: The name presents a mix of strengths and trade-offs. It is usable as-is, though adjustments could improve clarity or memorability.";
+  }
 
   return { memorability, clarity, practical, gutcheck, signals };
 }
@@ -87,7 +122,48 @@ function compareSummary(nameA, repA, nameB, repB) {
   if (repB.signals.cautionCount < repA.signals.cautionCount) {
     return `Between the two, "${nameB}" appears structurally smoother with fewer practical trade-offs.`;
   }
-  return "Both options appear structurally similar. The better choice may depend on audience and presentation.";
+
+  // Tie-breaker: shorter name often performs better in everyday use
+  if (repA.signals.short && !repB.signals.short) {
+    return `Both options are broadly workable. "${nameA}" may be slightly easier to use and remember in everyday contexts.`;
+  }
+  if (repB.signals.short && !repA.signals.short) {
+    return `Both options are broadly workable. "${nameB}" may be slightly easier to use and remember in everyday contexts.`;
+  }
+
+  return "Both options appear structurally similar. The better choice may depend on audience fit and how you plan to present it.";
+}
+
+// Pick which name to use for the domain link in compare mode
+function pickBetterName(nameA, repA, nameB, repB) {
+  if (repA.signals.cautionCount < repB.signals.cautionCount) return nameA;
+  if (repB.signals.cautionCount < repA.signals.cautionCount) return nameB;
+
+  if (repA.signals.short && !repB.signals.short) return nameA;
+  if (repB.signals.short && !repA.signals.short) return nameB;
+
+  return nameA;
+}
+
+// ---------- Affiliate / Next-step Links (placeholders for now) ----------
+function buildDomainLink(name) {
+  // Replace with your affiliate link later
+  return "https://www.namecheap.com/domains/registration/results/?domain=" +
+    encodeURIComponent(normalize(name).replace(/\s+/g, ""));
+}
+
+function buildLandingPageLink() {
+  // Replace with your referral link later
+  return "https://carrd.co/";
+}
+
+function buildLogoLink() {
+  // Replace with your affiliate link later
+  return "https://www.canva.com/";
+}
+
+function buildTrademarkSearchLink() {
+  return "https://www.uspto.gov/trademarks/search";
 }
 
 // ---------- DOM Wiring ----------
@@ -119,23 +195,23 @@ const bG = document.getElementById("b-g");
 const compareSummaryEl = document.getElementById("compare-summary");
 
 const domainLink = document.getElementById("domain-link");
-const trademarkLink = document.getElementById("trademark-link");
 const landingLink = document.getElementById("landingpage-link");
+const logoLink = document.getElementById("logo-link");
+const trademarkLink = document.getElementById("trademark-link");
 
-function buildDomainLink(name) {
-  return "https://www.namecheap.com/domains/registration/results/?domain=" + encodeURIComponent(name.replace(/\s+/g, ""));
-}
-
+// Toggle compare fields visibility
 form.addEventListener("change", () => {
   const mode = document.querySelector('input[name="mode"]:checked').value;
   compareFields.hidden = mode !== "compare";
 });
 
+// Submit handler
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const mode = document.querySelector('input[name="mode"]:checked').value;
   const nameA = normalize(inputA.value);
+
   if (!nameA) return;
 
   results.hidden = false;
@@ -153,8 +229,9 @@ form.addEventListener("submit", (e) => {
     gutcheckText.textContent = rep.gutcheck;
 
     domainLink.href = buildDomainLink(nameA);
-    trademarkLink.href = "https://www.uspto.gov/trademarks/search";
-    landingLink.href = "https://carrd.co/";
+    landingLink.href = buildLandingPageLink();
+    logoLink.href = buildLogoLink();
+    trademarkLink.href = buildTrademarkSearchLink();
 
   } else {
     const nameB = normalize(inputB.value);
@@ -181,11 +258,13 @@ form.addEventListener("submit", (e) => {
 
     compareSummaryEl.textContent = compareSummary(nameA, repA, nameB, repB);
 
-    domainLink.href = buildDomainLink(nameA);
-    trademarkLink.href = "https://www.uspto.gov/trademarks/search";
-    landingLink.href = "https://carrd.co/";
+    const betterName = pickBetterName(nameA, repA, nameB, repB);
+
+    domainLink.href = buildDomainLink(betterName);
+    landingLink.href = buildLandingPageLink();
+    logoLink.href = buildLogoLink();
+    trademarkLink.href = buildTrademarkSearchLink();
   }
 
-  results.scrollIntoView({ behavior: "smooth" });
+  results.scrollIntoView({ behavior: "smooth", block: "start" });
 });
-
