@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Structured Gut Check</title>
+
+  <meta name="description" content="A structured gut check for names and ideas. Calm feedback on memorability, clarity, and practical considerations." />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>Structured Gut Check for Names and Ideas</h1>
+    <p>
+      Enter a name or idea to receive calm, practical feedback on memorability, clarity, and everyday usability.
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Run a gut check</h2>
+
+      <form id="gutcheck-form" autocomplete="off">
+        <fieldset>
+          <legend>Mode</legend>
+          <label>
+            <input type="radio" name="mode" value="single" checked />
+            Single name
+          </label>
+          <label style="margin-left: 1rem;">
+            <input type="radio" name="mode" value="compare" />
+            Compare two names
+          </label>
+        </fieldset>
+
+        <label for="name-input">Name or idea</label>
+        <input
+          id="name-input"
+          name="nameA"
+          type="text"
+          placeholder='e.g., "Midnight Lantern Studio"'
+          required
+        />
+
+        <div id="compare-fields" hidden>
+          <label for="name-input-b">Second name or idea</label>
+          <input
+            id="name-input-b"
+            name="nameB"
+            type="text"
+            placeholder='e.g., "Lantern & Loom"'
+          />
+        </div>
+
+        <button type="submit">Run gut check</button>
+      </form>
+    </section>
+
+    <section id="results" hidden>
+      <h2>Results</h2>
+
+      <!-- SINGLE NAME RESULTS -->
+      <div id="single-results">
+        <p>
+          Gut check for:
+          <strong id="echo-input"></strong>
+        </p>
+
+        <article>
+          <h3>Memorability</h3>
+          <p id="memorability-text"></p>
+        </article>
+
+        <article>
+          <h3>Clarity</h3>
+          <p id="clarity-text"></p>
+        </article>
+
+        <article>
+          <h3>Practical considerations</h3>
+          <p id="practical-text"></p>
+        </article>
+
+        <aside>
+          <h3>Gut check</h3>
+          <p id="gutcheck-text"></p>
+        </aside>
+      </div>
+
+      <!-- COMPARE RESULTS -->
+      <section id="compare-results" hidden>
+        <h3>Comparison</h3>
+
+        <div class="compare-grid">
+          <div class="compare-col">
+            <h4>A</h4>
+            <p><strong id="echo-a"></strong></p>
+
+            <p><strong>Memorability</strong><br /><span id="a-m"></span></p>
+            <p><strong>Clarity</strong><br /><span id="a-c"></span></p>
+            <p><strong>Practical</strong><br /><span id="a-p"></span></p>
+            <p><strong>Gut check</strong><br /><span id="a-g"></span></p>
+          </div>
+
+          <div class="compare-col">
+            <h4>B</h4>
+            <p><strong id="echo-b"></strong></p>
+
+            <p><strong>Memorability</strong><br /><span id="b-m"></span></p>
+            <p><strong>Clarity</strong><br /><span id="b-c"></span></p>
+            <p><strong>Practical</strong><br /><span id="b-p"></span></p>
+            <p><strong>Gut check</strong><br /><span id="b-g"></span></p>
+          </div>
+        </div>
+
+        <aside>
+          <h4>Comparison summary</h4>
+          <p id="compare-summary"></p>
+        </aside>
+      </section>
+
+      <section>
+        <h3>Next steps (optional)</h3>
+        <ul>
+          <li><a id="domain-link" href="#" target="_blank" rel="nofollow noopener">Check domain availability</a></li>
+          <li><a id="trademark-link" href="#" target="_blank" rel="nofollow noopener">Search existing trademarks</a></li>
+          <li><a id="landingpage-link" href="#" target="_blank" rel="nofollow noopener">Create a simple landing page</a></li>
+        </ul>
+      </section>
+
+      <footer>
+        <p>
+          This tool provides general structural feedback only. It does not assess legal availability, trademarks, or domain ownership.
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
