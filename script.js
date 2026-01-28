@@ -269,3 +269,14 @@ form.addEventListener("submit", (e) => {
 
   results.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+function trackOutbound(path) {
+  if (window.goatcounter && typeof window.goatcounter.count === "function") {
+    window.goatcounter.count({ path });
+  }
+}
+
+// Track clicks on your “Next steps” links
+document.getElementById("domain-link")?.addEventListener("click", () => trackOutbound("/out/domain"));
+document.getElementById("landingpage-link")?.addEventListener("click", () => trackOutbound("/out/landing"));
+document.getElementById("trademark-link")?.addEventListener("click", () => trackOutbound("/out/trademark"));
+
