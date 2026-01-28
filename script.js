@@ -147,14 +147,15 @@ function pickBetterName(nameA, repA, nameB, repB) {
 
 // ---------- Affiliate / Next-step Links (placeholders for now) ----------
 function buildDomainLink(name) {
-  // Replace with your affiliate link later
-  return "https://www.namecheap.com/domains/registration/results/?domain=" +
-    encodeURIComponent(normalize(name).replace(/\s+/g, ""));
+  const base = "https://namecheap.pxf.io/c/6925793/1632743/5618"; // example format
+  const query = encodeURIComponent(normalize(name).replace(/\s+/g, ""));
+  return base + "?domain=" + query;
 }
+
 
 function buildLandingPageLink() {
   // Replace with your referral link later
-  return "https://carrd.co/";
+  return "https://try.carrd.co/wpf751hj";
 }
 
 function buildLogoLink() {
